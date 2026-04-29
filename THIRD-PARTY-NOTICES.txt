@@ -1,0 +1,110 @@
+THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
+
+CodeBrix.Platform.OpenGL is a .NET 10 port of the Silk.NET.OpenGL v2.23.0
+NuGet package and its immediate dependencies (Silk.NET.Core and
+Silk.NET.Maths). The port incorporates substantial third-party source
+code from the upstream Silk.NET project, adapted to build against .NET 10
+without the Silk.NET.SilkTouch Roslyn source generator.
+
+Jeremy Ellis and contributors license the CodeBrix.Platform.OpenGL project
+to you under the terms set forth in the LICENSE file, which is located at
+the root of this repository.
+
+If you have any questions about any third-party code or services referenced
+here, or if you believe that any third-party code has been included in
+CodeBrix.Platform.OpenGL in error, please open a new issue at:
+https://github.com/ellisnet/CodeBrix.Platform.OpenGL/issues
+
+================================================================================
+
+1. Silk.NET (upstream)
+
+    Project:         Silk.NET
+    Repository:      https://github.com/dotnet/Silk.NET
+    Tag:             v2.23.0
+    Commit:          94605142f7b7bd6e69c9201e8e721d245c69eb7e
+    Copyright:       Copyright (c) .NET Foundation and Contributors
+    License:         MIT
+    Licensed to you by: The .NET Foundation under the terms of the
+                        MIT License (reproduced below).
+
+Ported upstream projects:
+
+    src/OpenGL/Silk.NET.OpenGL     -> src/CodeBrix.Platform.OpenGL/OpenGL/
+    src/Core/Silk.NET.Core         -> src/CodeBrix.Platform.OpenGL/Core/
+    src/Maths/Silk.NET.Maths       -> src/CodeBrix.Platform.OpenGL/Maths/
+
+Upstream test projects ported into tests/CodeBrix.Platform.OpenGL.Tests/:
+
+    src/Core/Silk.NET.Core.Tests   -> tests/CodeBrix.Platform.OpenGL.Tests/Core/
+    src/Maths/Silk.NET.Maths.Tests -> tests/CodeBrix.Platform.OpenGL.Tests/Maths/
+
+(Silk.NET has no Silk.NET.OpenGL.Tests upstream project; upstream validates
+OpenGL via sample applications that require a GL context, not via xUnit.)
+
+Modifications during port:
+
+    - Target framework narrowed from the multi-TFM upstream set to net10.0 only.
+    - All `#if` framework-selection conditional-compile blocks for older
+      frameworks (netstandard2.0, netstandard2.1, netcoreapp3.1, net5.0,
+      net6.0, net7.0-android, net7.0-ios) were resolved at port time: the
+      .NET-10-applicable branch was kept, the rest stripped.
+    - The Silk.NET.SilkTouch Roslyn source generator was NOT ported.
+      Instead, the single large generated file that SilkTouch emits for
+      Silk.NET.OpenGL (~150k lines containing ~3,680 method body
+      implementations and the GeneratedVTable class) was captured from an
+      upstream build and is committed as static source at
+      src/CodeBrix.Platform.OpenGL/OpenGL/GL.gen.bodies.cs.
+    - Upstream namespaces were renamed:
+        Silk.NET.OpenGL  -> CodeBrix.Platform.OpenGL
+        Silk.NET.Core    -> CodeBrix.Platform.OpenGL.Core
+        Silk.NET.Maths   -> CodeBrix.Platform.OpenGL.Maths
+      Every ported file's namespace line carries a
+      `//was previously: <upstream-ns>;` provenance comment.
+    - The `Ultz.Bcl.Half` NuGet polyfill dependency was dropped; .NET 10
+      provides `System.Half` natively.
+    - The `Silk.NET` public-API-diff discipline (`SilkPublicApiExempt`
+      property, `PublicAPI.Shipped.txt`/`.Unshipped.txt` files, and the
+      `Microsoft.CodeAnalysis.PublicApiAnalyzers` dependency) was removed
+      — this fork does not maintain that discipline.
+    - The `RequiresLocationAttribute` polyfill was dropped in favor of the
+      BCL `System.Runtime.CompilerServices.RequiresLocationAttribute`
+      available in .NET 10.
+    - Tests were migrated from xUnit v2 to xUnit v3, including the
+      mandatory `TestContext.Current.CancellationToken` threading for any
+      cancellable API call.
+    - Upstream file headers ("Licensed to the .NET Foundation under one
+      or more agreements ...") are preserved verbatim on every ported
+      file per skill convention.
+
+--------------------------------------------------------------------------------
+Silk.NET MIT License (verbatim, as shipped at v2.23.0):
+--------------------------------------------------------------------------------
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+
+END OF THIRD-PARTY SOFTWARE NOTICES AND INFORMATION

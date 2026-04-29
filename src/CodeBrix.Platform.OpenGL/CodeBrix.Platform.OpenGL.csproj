@@ -1,0 +1,93 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>CodeBrix.Platform.OpenGL</AssemblyName>
+    <RootNamespace>CodeBrix.Platform.OpenGL</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!--
+      Nullable reference type annotations are ENABLED on this repository as
+      a per-repo exception to the CodeBrix family convention of NRT-off.
+      Rationale: this library is a port of Silk.NET.OpenGL v2.23.0; the
+      upstream Silk.NET.Maths csproj enables NRT and the upstream code
+      depends on `?` annotations throughout. Preserving upstream fidelity
+      requires NRT-on here. New (non-ported) CodeBrix code added to this
+      repo should still avoid `?` annotations where possible.
+    -->
+    <Nullable>enable</Nullable>
+    <!--
+      Upstream DefineConstants carried over from Silk.NET.Maths' csproj for
+      its net5.0 TFM. On net10.0 we want the modern-hardware code paths
+      (SSE, AdvSIMD, BTEC_INTRINSICS, MATHF, POH) active, matching what
+      upstream Maths activated on net5.0. These constants gate code
+      inside Silk.NET.Maths; they do not affect Silk.NET.Core or the
+      ported GL bindings.
+    -->
+    <!--
+      NOTE: SSE and AdvSIMD are deliberately NOT defined here. On net10.0
+      the JIT already emits SIMD code for hot paths via the standard
+      `System.Numerics.Vector<T>` and `System.Runtime.Intrinsics` APIs
+      without the manual Silk.NET.Maths `#if SSE` dispatch. Enabling those
+      defines activates the upstream hand-rolled intrinsics path which was
+      observed to return incorrect results on net10.0 Release builds for
+      Log/Exp operations (Log(1) → -∞ instead of 0, Exp(1) → 1.17 instead
+      of 2.718). Leaving them off uses the scalar path, which is
+      correct and well-tested. Hardware acceleration for vector/matrix
+      operations still flows through the BCL paths.
+    -->
+    <DefineConstants>$(DefineConstants);BTEC_INTRINSICS;MATHF;POH</DefineConstants>
+    <!--
+      CS1591 (missing XML doc) is suppressed for this repository only, by
+      explicit per-repo exception granted by the project owner. Rationale:
+      this library is a fork of Silk.NET.OpenGL v2.23.0; the upstream
+      surface (~3,680 entry points plus extensive ported Core/Maths types)
+      is largely undocumented, and preserving upstream fidelity precludes
+      retrofitting doc comments on every ported member. No other warnings
+      are suppressed project-wide.
+    -->
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>CodeBrix.Platform.OpenGL.MitLicenseForever</PackageId>
+    <Version>1.0.117</Version>
+    <Product>CodeBrix.Platform.OpenGL</Product>
+    <Title>CodeBrix.Platform.OpenGL</Title>
+    <Authors>Jeremy Ellis</Authors>
+    <Description>A fully managed, cross-platform OpenGL bindings library for .NET 10. A port of Silk.NET.OpenGL v2.23.0 (and its Silk.NET.Core and Silk.NET.Maths dependencies) that builds without the Silk.NET.SilkTouch Roslyn source generator. Pre-captured generated method bodies ship as static source for a zero-source-generator .NET 10 experience.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/ellisnet/CodeBrix.Platform.OpenGL</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ellisnet/CodeBrix.Platform.OpenGL</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon-codebrix-128.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>Copyright (c) 2026 Jeremy Ellis and contributors</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <IsPackable>true</IsPackable>
+    <PackageTags>OpenGL;Graphics;Bindings;NativeInterop;Silk.NET;Cross-Platform;Rendering;CodeBrix</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Runtime Microsoft-published NuGet dependencies carried over from the
+      upstream Silk.NET.Core csproj. Ultz.Bcl.Half / System.Memory /
+      System.Runtime.CompilerServices.Unsafe / System.Numerics.Vectors /
+      Microsoft.Bcl.HashCode were dropped because net10.0 BCL provides
+      them natively. Microsoft.CodeAnalysis.PublicApiAnalyzers (upstream
+      Maths only, dev-time) is dropped because this fork does not maintain
+      public-API-diff discipline.
+    -->
+    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="10.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\icon-codebrix-128.png" Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\..\AGENT-README.txt" Pack="true" PackagePath="" />
+    <None Include="..\..\THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>
