@@ -121,7 +121,7 @@
       public-API-diff discipline.
     -->
     <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="10.0.11" />
   </ItemGroup>
 
   <ItemGroup>
