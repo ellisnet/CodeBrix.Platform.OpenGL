@@ -28,7 +28,7 @@ and that you will use directly:
                                       Matrix4X4<float>, ...) plus converters
                                       to and from System.Numerics
 
-Provenance: this is a port of Silk.NET.OpenGL v2.23.0 together with its
+Provenance: this is a port of Silk.NET.OpenGL together with its
 Silk.NET.Core and Silk.NET.Maths dependencies. Namespaces were renamed
 (Silk.NET.OpenGL -> CodeBrix.Platform.OpenGL, Silk.NET.Core ->
 CodeBrix.Platform.OpenGL.Core, Silk.NET.Maths -> CodeBrix.Platform.OpenGL.Maths).
@@ -778,9 +778,9 @@ CodeBrix.Platform.OpenGL.Core.Attributes:
 16. PORT PROVENANCE MARKER
 --------------------------
     public static class PortStatus
-        static string UpstreamVersion { get; }   // "Silk.NET v2.23.0"
+        static string UpstreamVersion { get; }   // upstream version string
         static string UpstreamCommit  { get; }   // upstream git sha
-        static string PortedSoFar     { get; }   // human-readable summary
+        static string PortedComponents { get; }   // human-readable summary
 
 COMPLETE EXAMPLES
 =================

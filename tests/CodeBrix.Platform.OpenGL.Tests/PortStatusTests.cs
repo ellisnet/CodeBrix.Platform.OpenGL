@@ -15,6 +15,6 @@ public class PortStatusTests
         => PortStatus.UpstreamCommit.Should().Be("94605142f7b7bd6e69c9201e8e721d245c69eb7e");
 
     [Fact]
-    public void PortedSoFar_is_populated()
-        => PortStatus.PortedSoFar.Should().NotBeNullOrWhiteSpace();
+    public void PortedComponents_is_populated()
+        => PortStatus.PortedComponents.Should().NotBeNullOrWhiteSpace();
 }

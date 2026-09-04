@@ -49,8 +49,10 @@ REPOSITORY LAYOUT
 Root files
 ----------
     CodeBrix.Platform.OpenGL.slnx  solution; carries a "Solution Items"
-                                   folder (AGENT-README.txt,
+                                   folder (.gitignore, AGENT-README.txt,
+                                   EXTRAS-README.txt, global.json,
                                    icon-codebrix-128.png, LICENSE,
+                                   MAINTAINER-README.txt, README-INDEX.txt,
                                    README.md, THIRD-PARTY-NOTICES.txt) and a
                                    "Tests" folder holding the test project
     AGENT-README.txt               consumer documentation; PACKED into the
@@ -64,6 +66,8 @@ Root files
     THIRD-PARTY-NOTICES.txt        upstream attribution and the list of
                                    ported files; packed
     icon-codebrix-128.png          package icon; packed
+    global.json                    selects the Microsoft.Testing.Platform
+                                   test runner; pins no SDK version
 
 Source layout (src/CodeBrix.Platform.OpenGL/) -- the three upstream
 libraries are kept as three top-level folders and three namespaces:
@@ -181,11 +185,22 @@ TESTING
 
     dotnet test CodeBrix.Platform.OpenGL.slnx
 
+THE TEST RUNNER IS Microsoft.Testing.Platform, selected by global.json at the
+repository root. That file does NOT pin an SDK version, so the newest
+installed .NET 10 SDK is still used; it exists solely to select the runner:
+
+    { "test": { "runner": "Microsoft.Testing.Platform" } }
+
+Because the setting lives in global.json rather than in the test csproj, it
+applies to every `dotnet test` run anywhere in the repository. Keep the file
+committed -- without it `dotnet test` silently falls back to the older VSTest
+bridge.
+
 Test project: tests/CodeBrix.Platform.OpenGL.Tests/, targeting net10.0 with
-AllowUnsafeBlocks ON. Framework is xUnit v3 plus SilverAssertions. There is
-no xunit.runner.json and no special runner configuration; collections run in
-parallel by default. There are no opt-in environment variables and no
-special prep.
+AllowUnsafeBlocks ON. Framework is xUnit v3 plus SilverAssertions, with no
+coverage collector. There is no xunit.runner.json and no special runner
+configuration; collections run in parallel by default. There are no opt-in
+environment variables and no special prep.
 
 What the suite does and does not cover
 --------------------------------------
@@ -282,7 +297,7 @@ consumer or a test can assert what this build was ported from:
     public static class PortStatus            // ns CodeBrix.Platform.OpenGL
         static string UpstreamVersion { get; }
         static string UpstreamCommit  { get; }
-        static string PortedSoFar     { get; }
+        static string PortedComponents { get; }
 
 Keep those three strings in step with THIRD-PARTY-NOTICES.txt whenever the
 port is refreshed; PortStatusTests.cs asserts on them.

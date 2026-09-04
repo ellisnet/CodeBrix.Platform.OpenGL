@@ -96,7 +96,7 @@
     <Product>CodeBrix.Platform.OpenGL</Product>
     <Title>CodeBrix.Platform.OpenGL</Title>
     <Authors>Jeremy Ellis</Authors>
-    <Description>A fully managed, cross-platform OpenGL bindings library for .NET 10. A port of Silk.NET.OpenGL v2.23.0 (and its Silk.NET.Core and Silk.NET.Maths dependencies) that builds without the Silk.NET.SilkTouch Roslyn source generator. Pre-captured generated method bodies ship as static source for a zero-source-generator .NET 10 experience.</Description>
+    <Description>A fully managed, cross-platform OpenGL bindings library for .NET 10. Exposes the OpenGL Core-profile API through function-pointer P/Invoke dispatch, with cross-platform native-library resolution and the vector / matrix / scalar maths types the OpenGL signatures use. The P/Invoke method bodies ship as ordinary source, so no Roslyn source generator runs in the build.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ellisnet/CodeBrix.Platform.OpenGL</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ellisnet/CodeBrix.Platform.OpenGL</RepositoryUrl>
@@ -107,7 +107,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <IsPackable>true</IsPackable>
-    <PackageTags>OpenGL;Graphics;Bindings;NativeInterop;Silk.NET;Cross-Platform;Rendering;CodeBrix</PackageTags>
+    <PackageTags>OpenGL;Graphics;Bindings;NativeInterop;Cross-Platform;Rendering;CodeBrix</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

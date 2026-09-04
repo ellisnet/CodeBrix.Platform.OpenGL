@@ -1,11 +1,9 @@
 namespace CodeBrix.Platform.OpenGL;
 
 /// <summary>
-/// Marker class reporting the current state of the port from
-/// Silk.NET.OpenGL v2.23.0 to CodeBrix.Platform.OpenGL. This type is a
-/// placeholder that exists so the library package has a discoverable public
-/// surface during the scaffolding phase of the port. It will remain in the
-/// shipped library as a port-provenance record after the port stabilizes.
+/// Marker class recording the provenance of the port from Silk.NET.OpenGL
+/// v2.23.0 to CodeBrix.Platform.OpenGL. It gives the library package a
+/// discoverable public surface, and ships as the port-provenance record.
 /// </summary>
 public static class PortStatus
 {
@@ -20,11 +18,11 @@ public static class PortStatus
     public static string UpstreamCommit => "94605142f7b7bd6e69c9201e8e721d245c69eb7e";
 
     /// <summary>
-    /// Gets a human-readable short description of what portions of the upstream
-    /// source have been ported so far. This string is updated by hand as the
-    /// port progresses.
+    /// Gets a human-readable short description of which portions of the upstream
+    /// source were ported. Kept in step with THIRD-PARTY-NOTICES.txt by hand
+    /// whenever the port is refreshed to a newer upstream version.
     /// </summary>
-    public static string PortedSoFar =>
+    public static string PortedComponents =>
         "Silk.NET.Core (125 files), Silk.NET.Maths (58 files), and Silk.NET.OpenGL " +
         "(327 source files + one ~151k-line SilkTouch-captured generated-bodies file) " +
         "all ported. Silk.NET.Core.Tests and Silk.NET.Maths.Tests ported to xUnit v3. " +
