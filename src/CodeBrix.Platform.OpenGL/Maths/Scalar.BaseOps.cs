@@ -4,12 +4,6 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-#if AdvSIMD
-using System.Runtime.Intrinsics.Arm;
-#endif
-#if SSE
-using System.Runtime.Intrinsics.X86;
-#endif
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 // casting into non-nullable, unboxing from nullable  
@@ -38,16 +32,12 @@ public static partial class Scalar
     private static void ThrowIndexOutOfRange() => throw new IndexOutOfRangeException();
 
     /// <summary>
-    /// Indicates whether members are hardware accelerated. Not all members support hardware acceleration.
+    /// Indicates whether members are hardware accelerated. Always <c>false</c>: no member of
+    /// <see cref="Scalar"/> carries a hand-written SSE or AdvSIMD code path. Floating-point members
+    /// call the <see cref="MathF"/> and <see cref="Math"/> methods, which the JIT may still compile to
+    /// hardware instructions on its own.
     /// </summary>
-    public static bool IsHardwareAccelerated => false
-#if SSE
-    || Sse.IsSupported
-#endif
-#if AdvSIMD
-    || AdvSimd.IsSupported
-#endif
-    ;
+    public static bool IsHardwareAccelerated => false;
 
     /// <summary>
     /// Determines whether the specified value is finite (zero, subnormal, or normal).

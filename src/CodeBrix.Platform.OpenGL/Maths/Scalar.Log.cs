@@ -32,10 +32,6 @@
 
 using System;
 using System.Runtime.CompilerServices;
-#if SSE
-using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.X86;
-#endif
 
 namespace CodeBrix.Platform.OpenGL.Maths; //was previously: Silk.NET.Maths;
 
@@ -158,22 +154,12 @@ public static partial class Scalar
         [MethodImpl(MaxOpt)]
         static unsafe uint asuint(float x)
         {
-#if SSE
-            if (Sse.IsSupported)
-                return Vector128.CreateScalarUnsafe(x).AsUInt32().ToScalar(); // ToScalar "relies" on Sse (the fallback is garbage)
-            else
-#endif
             return *(uint*) &x; // this produces bad codegen on < net5
         }
 
         [MethodImpl(MaxOpt)]
         static unsafe float asfloat(uint x)
         {
-#if SSE
-            if (Sse.IsSupported)
-                return Vector128.CreateScalarUnsafe(x).AsSingle().ToScalar(); // ToScalar "relies" on Sse (the fallback is garbage)
-            else
-#endif
             return *(float*) &x; // this produces bad codegen on < net5
         }
 

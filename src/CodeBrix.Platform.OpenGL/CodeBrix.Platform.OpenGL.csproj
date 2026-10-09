@@ -18,23 +18,20 @@
     <Nullable>enable</Nullable>
     <!--
       Upstream DefineConstants carried over from Silk.NET.Maths' csproj for
-      its net5.0 TFM. On net10.0 we want the modern-hardware code paths
-      (SSE, AdvSIMD, BTEC_INTRINSICS, MATHF, POH) active, matching what
-      upstream Maths activated on net5.0. These constants gate code
-      inside Silk.NET.Maths; they do not affect Silk.NET.Core or the
-      ported GL bindings.
+      its net5.0 TFM: BTEC_INTRINSICS, MATHF and POH. These constants gate
+      code inside the Maths folder; they do not affect the Core folder or
+      the ported GL bindings.
     -->
     <!--
-      NOTE: SSE and AdvSIMD are deliberately NOT defined here. On net10.0
-      the JIT already emits SIMD code for hot paths via the standard
-      `System.Numerics.Vector<T>` and `System.Runtime.Intrinsics` APIs
-      without the manual Silk.NET.Maths `#if SSE` dispatch. Enabling those
-      defines activates the upstream hand-rolled intrinsics path which was
-      observed to return incorrect results on net10.0 Release builds for
-      Log/Exp operations (Log(1) → -∞ instead of 0, Exp(1) → 1.17 instead
-      of 2.718). Leaving them off uses the scalar path, which is
-      correct and well-tested. Hardware acceleration for vector/matrix
-      operations still flows through the BCL paths.
+      NOTE: upstream also defined SSE and AdvSIMD, which switched on
+      hand-written System.Runtime.Intrinsics paths in Scalar. Those paths
+      returned wrong results on net10.0 (Log(1) gave negative infinity
+      instead of 0, Exp(1) gave 1.17 instead of 2.718; the Maths LogTests
+      and ExpTests fail when they are compiled in), so they have been
+      removed from the source rather than left behind dead switches.
+      Scalar uses the scalar path and the MathF / Math methods, which the
+      JIT compiles to hardware instructions where it can, and
+      Scalar.IsHardwareAccelerated returns false.
     -->
     <DefineConstants>$(DefineConstants);BTEC_INTRINSICS;MATHF;POH</DefineConstants>
     <!--

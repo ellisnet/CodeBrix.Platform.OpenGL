@@ -4,15 +4,6 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-#if SSE || AdvSIMD
-using System.Runtime.Intrinsics;
-#endif
-#if SSE
-using System.Runtime.Intrinsics.X86;
-#endif
-#if AdvSIMD
-using System.Runtime.Intrinsics.Arm;
-#endif
 
 // it doesn't like default because it may be null
 #pragma warning disable 8603
@@ -142,20 +133,8 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(sbyte))
             {
-#if SSE
-                if (Ssse3.IsSupported)
-                {
-                    return (T)(object)(sbyte)Ssse3.Abs(Vector128.CreateScalar((sbyte) (object) x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T) (object) (sbyte)AdvSimd.Abs(Vector64.CreateScalar((sbyte) (object) x)).ToScalar();
-                }
-#endif
                 var px = (sbyte) (object) x;
-                sbyte mask = (sbyte) (px >> (sizeof(sbyte) - 1));
+                sbyte mask = (sbyte) (px >> (sizeof(sbyte) * 8 - 1));
                 return (T) (object) (sbyte) ((px + mask) ^ mask);
             }
 
@@ -178,20 +157,8 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(int))
             {
-#if SSE
-                if (Ssse3.IsSupported)
-                {
-                    return (T)(object)(int)Ssse3.Abs(Vector128.CreateScalar((int) (object) x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T) (object)(int) AdvSimd.Abs(Vector64.CreateScalar((int) (object) x)).ToScalar();
-                }
-#endif
                 var px = (int) (object) x;
-                int mask = (int) (px >> (sizeof(int) - 1));
+                int mask = (int) (px >> (sizeof(int) * 8 - 1));
                 return (T) (object) (int) ((px + mask) ^ mask);
             }
 
@@ -215,7 +182,7 @@ public static partial class Scalar
             if (typeof(T) == typeof(long))
             {
                 var px = (long) (object) x;
-                long mask = (long) (px >> (sizeof(long) - 1));
+                long mask = (long) (px >> (sizeof(long) * 8 - 1));
                 return (T) (object) (long) ((px + mask) ^ mask);
             }
 
@@ -238,20 +205,8 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(short))
             {
-#if SSE
-                if (Ssse3.IsSupported)
-                {
-                    return (T)(object)(short)Ssse3.Abs(Vector128.CreateScalar((short) (object) x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T) (object)(short)AdvSimd.Abs(Vector64.CreateScalar((short) (object) x)).ToScalar();
-                }
-#endif
                 var px = (short) (object) x;
-                short mask = (short) (px >> (sizeof(short) - 1));
+                short mask = (short) (px >> (sizeof(short) * 8 - 1));
                 return (T) (object) (short) ((px + mask) ^ mask);
             }
 
@@ -2001,18 +1956,6 @@ public static partial class Scalar
     {
         if (typeof(T) == typeof(Half))
         {
-#if SSE
-            if (Sse41.IsSupported)
-            {
-                return (T)(object)(Half)Sse41.FloorScalar(Vector128.CreateScalarUnsafe((float) (Half) (object) x)).ToScalar();
-            }
-#endif
-#if AdvSIMD
-            if (AdvSimd.IsSupported)
-            {
-                return (T)(object)(Half)AdvSimd.FloorScalar(Vector64.CreateScalarUnsafe((float) (Half) (object) x)).ToScalar();
-            }
-#endif  
 #if !MATHF
             return (T) (object) (Half) Math.Floor((float) (Half) (object) x);
 #else
@@ -2027,18 +1970,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(float))
             {
-#if SSE
-                if (Sse41.IsSupported)
-                {
-                    return (T)(object)Sse41.FloorScalar(Vector128.CreateScalarUnsafe((float) (object) x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)AdvSimd.FloorScalar(Vector64.CreateScalarUnsafe((float) (object) x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (float) Math.Floor((float) (object) x);
 #else
@@ -2054,18 +1985,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(double))
             {
-#if SSE
-                if (Sse41.IsSupported)
-                {
-                    return (T)(object)Sse41.FloorScalar(Vector128.CreateScalarUnsafe((double) (object) x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)AdvSimd.FloorScalar(Vector64.CreateScalar((double) (object) x)).ToScalar();
-                }
-#endif
                 return (T) (object) Math.Floor((double) (object) x);
             }
 
@@ -2077,18 +1996,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(decimal))
             {
-#if SSE
-                if (Sse41.IsSupported)
-                {
-                    return (T)(object)(decimal)Sse41.FloorScalar(Vector128.CreateScalarUnsafe((double)(decimal) (object) x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(decimal)AdvSimd.FloorScalar(Vector64.CreateScalar((double)(decimal) (object) x)).ToScalar();
-                }
-#endif      
                 return (T) (object) Math.Floor((decimal) (object) x);
             }
 
@@ -2701,18 +2608,6 @@ public static partial class Scalar
     {
         if (typeof(T) == typeof(Half))
         {
-#if SSE
-            if (Sse42.IsSupported)
-            {
-                return (T)(object)(Half)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(Half)(object)x)).ToScalar();
-            }
-#endif
-#if AdvSIMD
-            if (AdvSimd.IsSupported)
-            {
-                return (T)(object)(Half)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(Half)(object)x)).ToScalar();
-            }
-#endif  
 #if !MATHF
             return (T) (object) (Half) (float) Math.Sqrt((float) (Half) (object) x);
 #else
@@ -2727,18 +2622,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(float))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (float) Math.Sqrt((float) (object) x);
 #else
@@ -2754,18 +2637,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(double))
             {
-#if SSE
-                if (Sse2.IsSupported)
-                {
-                    return (T)(object)(double)Sse2.SqrtScalar(Vector128.CreateScalarUnsafe((double)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(double)AdvSimd.SqrtScalar(Vector64.CreateScalar((double)(object)x)).ToScalar();
-                }
-#endif      
                 return (T) (object) (double) Math.Sqrt((double) (object) x);
             }
 
@@ -2789,18 +2660,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(sbyte))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(sbyte)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(sbyte)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(sbyte)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(sbyte)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (sbyte) (float) Math.Sqrt((float) (sbyte) (object) x);
 #else
@@ -2816,18 +2675,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(byte))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(byte)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(byte)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(byte)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(byte)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (byte) (float) Math.Sqrt((float) (byte) (object) x);
 #else
@@ -2843,18 +2690,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(short))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(short)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(short)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(short)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(short)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (short) (float) Math.Sqrt((float) (short) (object) x);
 #else
@@ -2870,18 +2705,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(ushort))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(ushort)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(ushort)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(ushort)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(ushort)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (ushort) (float) Math.Sqrt((float) (ushort) (object) x);
 #else
@@ -2897,18 +2720,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(int))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(int)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(int)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(int)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(int)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (int) (float) Math.Sqrt((float) (int) (object) x);
 #else
@@ -2924,18 +2735,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(uint))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(uint)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(uint)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(uint)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(uint)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (uint) (float) Math.Sqrt((float) (uint) (object) x);
 #else
@@ -2951,18 +2750,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(long))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(long)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(long)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(long)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(long)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (long) (float) Math.Sqrt((float) (long) (object) x);
 #else
@@ -2990,18 +2777,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(ulong))
             {
-#if SSE
-                if (Sse.IsSupported)
-                {
-                    return (T)(object)(ulong)(float)Sse.SqrtScalar(Vector128.CreateScalarUnsafe((float)(ulong)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(ulong)(float)AdvSimd.SqrtScalar(Vector64.CreateScalarUnsafe((float)(ulong)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (ulong) (float) Math.Sqrt((float) (ulong) (object) x);
 #else
@@ -3895,18 +3670,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(float))
             {
-#if SSE
-                if (Sse42.IsSupported)
-                {
-                    return (T)(object)(float)Sse41.RoundToNearestIntegerScalar(Vector128.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(float)AdvSimd.RoundToNearestScalar(Vector64.CreateScalar((float)(object)x)).ToScalar();
-                }
-#endif      
 #if !MATHF
                 return (T) (object) (float) Math.Round((float) (object) x);
 #else
@@ -3922,18 +3685,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(double))
             {
-#if SSE
-                if (Sse42.IsSupported)
-                {
-                    return (T)(object)(double)Sse41.RoundToNearestIntegerScalar(Vector128.CreateScalarUnsafe((double)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    return (T)(object)(double)AdvSimd.RoundToNearestScalar(Vector64.CreateScalar((double)(object)x)).ToScalar();
-                }
-#endif      
                 return (T) (object) (double) Math.Round((double) (object) x);
             }
 
@@ -5469,38 +5220,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(float))
             {
-#if SSE
-                if (Sse42.IsSupported)
-                {
-                    if (mode == MidpointRounding.ToZero)
-                        return (T)(object)(float)Sse41.RoundToZeroScalar(Vector128.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                    
-                    if (mode == MidpointRounding.ToPositiveInfinity)
-                        return (T)(object)(float)Sse41.RoundToPositiveInfinityScalar(Vector128.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                        
-                    if (mode == MidpointRounding.ToNegativeInfinity)
-                        return (T)(object)(float)Sse41.RoundToNegativeInfinityScalar(Vector128.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                    
-                    if (mode == MidpointRounding.ToEven)
-                        return (T)(object)(float)Sse41.RoundToNearestIntegerScalar(Vector128.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    if (mode == MidpointRounding.ToZero)
-                        return (T)(object)(float)AdvSimd.RoundToZeroScalar(Vector64.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                    
-                    if (mode == MidpointRounding.ToPositiveInfinity)
-                        return (T)(object)(float)AdvSimd.RoundToPositiveInfinityScalar(Vector64.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                        
-                    if (mode == MidpointRounding.ToNegativeInfinity)
-                        return (T)(object)(float)AdvSimd.RoundToNegativeInfinityScalar(Vector64.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                    
-                    if (mode == MidpointRounding.ToEven)
-                        return (T)(object)(float)AdvSimd.RoundToNearestScalar(Vector64.CreateScalarUnsafe((float)(object)x)).ToScalar();
-                }
-#endif
 #if !MATHF
                 return (T) (object) (float) Math.Round((float) (object) x, mode);
 #else
@@ -5516,38 +5235,6 @@ public static partial class Scalar
         {
             if (typeof(T) == typeof(double))
             {
-#if SSE
-                if (Sse42.IsSupported)
-                {
-                    if (mode == MidpointRounding.ToZero)
-                        return (T)(object)(double)Sse41.RoundToZeroScalar(Vector128.CreateScalarUnsafe((double)(object)x)).ToScalar();
-                    
-                    if (mode == MidpointRounding.ToPositiveInfinity)
-                        return (T)(object)(double)Sse41.RoundToPositiveInfinityScalar(Vector128.CreateScalarUnsafe((double)(object)x)).ToScalar();
-                        
-                    if (mode == MidpointRounding.ToNegativeInfinity)
-                        return (T)(object)(double)Sse41.RoundToNegativeInfinityScalar(Vector128.CreateScalarUnsafe((double)(object)x)).ToScalar();
-                    
-                    if (mode == MidpointRounding.ToEven)
-                        return (T)(object)(double)Sse41.RoundToNearestIntegerScalar(Vector128.CreateScalarUnsafe((double)(object)x)).ToScalar();
-                }
-#endif
-#if AdvSIMD
-                if (AdvSimd.IsSupported)
-                {
-                    if (mode == MidpointRounding.ToZero)
-                        return (T)(object)(double)AdvSimd.RoundToZeroScalar(Vector64.CreateScalar((double)(object)x)).ToScalar();
-                    
-                    if (mode == MidpointRounding.ToPositiveInfinity)
-                        return (T)(object)(double)AdvSimd.RoundToPositiveInfinityScalar(Vector64.CreateScalar((double)(object)x)).ToScalar();
-                        
-                    if (mode == MidpointRounding.ToNegativeInfinity)
-                        return (T)(object)(double)AdvSimd.RoundToNegativeInfinityScalar(Vector64.CreateScalar((double)(object)x)).ToScalar();
-                    
-                    if (mode == MidpointRounding.ToEven)
-                        return (T)(object)(double)AdvSimd.RoundToNearestScalar(Vector64.CreateScalar((double)(object)x)).ToScalar();
-                }
-#endif
                 return (T) (object) (double) Math.Round((double) (object) x, mode);
             }
 

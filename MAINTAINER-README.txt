@@ -154,16 +154,18 @@ src/CodeBrix.Platform.OpenGL/CodeBrix.Platform.OpenGL.csproj:
     over from the upstream maths project's constants for its old target
     framework, and gate code inside the Maths area only. They do not affect
     Core or the GL bindings.
-  * SSE and AdvSIMD are deliberately NOT defined -- read this before you
-    "re-enable hardware acceleration". Defining them activates the upstream
-    hand-rolled intrinsics dispatch, which was observed to return WRONG
-    RESULTS on net10.0 Release builds for the Log and Exp operations
-    (Log(1) came back as negative infinity instead of 0; Exp(1) as 1.17
-    instead of 2.718). With them off, Maths takes the scalar path, which is
-    correct and covered by the ExpTests / LogTests suites. The JIT still
-    emits SIMD for hot paths through the standard Vector<T> and
-    System.Runtime.Intrinsics APIs, so vector and matrix work is still
-    hardware-accelerated via the BCL.
+  * SSE and AdvSIMD are NOT defined, and the upstream `#if SSE` /
+    `#if AdvSIMD` blocks they used to switch on have been removed from the
+    Maths source. That hand-rolled intrinsics dispatch was observed to
+    return WRONG RESULTS on net10.0 Release builds for the Log and Exp
+    operations (Log(1) came back as negative infinity instead of 0; Exp(1)
+    as 1.17 instead of 2.718). Maths takes the scalar path and the
+    MathF / Math methods, which is correct and covered by the ExpTests /
+    LogTests suites; the JIT still compiles those BCL methods, and the
+    standard Vector<T> APIs, to hardware instructions where it can.
+    Scalar.IsHardwareAccelerated returns false, honestly: no Scalar member
+    has a hand-written SIMD path. Do not bring the upstream blocks back
+    without first making those suites pass with them compiled in.
   * A .nupkg is produced on every build (GeneratePackageOnBuild is true), so
     an ordinary `dotnet build` also packs.
 
@@ -218,10 +220,12 @@ of that method, and a fabricated context proves nothing about the binding.
 Verification of actual rendering belongs in a consuming application with a
 window, not here.
 
-Because the Maths intrinsics defines are off (see BUILDING), the
+Because the Maths intrinsics paths have been removed (see BUILDING), the
 Exp / Log / Pow accuracy suites are the guard on that decision. If someone
-turns SSE or AdvSIMD on, those suites are what will fail -- treat a failure
-there as "the define came back", not as a tolerance to loosen.
+brings the upstream SSE or AdvSIMD paths back, those suites are what will
+fail -- treat a failure there as "the intrinsics paths came back", not as a
+tolerance to loosen. ScalarAbsTests guards the integer Abs overloads, whose
+scalar fallback used to shift by a byte count instead of a bit count.
 
 
 PACKAGING AND PUBLISHING

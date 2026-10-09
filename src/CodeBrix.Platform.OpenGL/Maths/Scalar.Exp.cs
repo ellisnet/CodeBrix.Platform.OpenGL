@@ -32,10 +32,6 @@
 
 using System;
 using System.Runtime.CompilerServices;
-#if SSE
-using System.Runtime.Intrinsics;
-using System.Runtime.Intrinsics.X86;
-#endif
 
 namespace CodeBrix.Platform.OpenGL.Maths; //was previously: Silk.NET.Maths;
 
@@ -128,44 +124,24 @@ public static partial class Scalar
         [MethodImpl(MaxOpt)]
         static unsafe uint asuint32(float x)
         {
-#if SSE
-            if (Sse.IsSupported)
-                return Vector128.CreateScalarUnsafe(x).AsUInt32().ToScalar(); // ToScalar "relies" on Sse (the fallback is garbage)
-            else
-#endif
             return *(uint*) &x; // this produces bad codegen on < net5
         }
 
         [MethodImpl(MaxOpt)]
         static unsafe float asfloat(uint x)
         {
-#if SSE
-            if (Sse.IsSupported)
-                return Vector128.CreateScalarUnsafe(x).AsSingle().ToScalar(); // ToScalar "relies" on Sse (the fallback is garbage)
-            else
-#endif
             return *(float*) &x; // this produces bad codegen on < net5
         }
 
         [MethodImpl(MaxOpt)]
         static unsafe ulong asuint64(double x)
         {
-#if SSE
-            if (Sse.IsSupported)
-                return Vector128.CreateScalarUnsafe(x).AsUInt64().ToScalar(); // ToScalar "relies" on Sse (the fallback is garbage)
-            else
-#endif
             return *(ulong*) &x; // this produces bad codegen on < net5
         }
 
         [MethodImpl(MaxOpt)]
         static unsafe double asdouble(ulong x)
         {
-#if SSE
-            if (Sse.IsSupported)
-                return Vector128.CreateScalarUnsafe(x).AsDouble().ToScalar(); // ToScalar "relies" on Sse (the fallback is garbage)
-            else
-#endif
             return *(double*) &x; // this produces bad codegen on < net5
         }
 

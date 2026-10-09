@@ -7,7 +7,7 @@ OVERVIEW
 ========
 CodeBrix.Platform.OpenGL is a fully managed, cross-platform OpenGL binding
 for .NET 10 or later. It exposes the complete OpenGL core-profile surface
--- roughly 700 distinct native GL functions -- as about 1,590 methods on a
+-- roughly 700 distinct native GL functions -- as about 5,650 methods on a
 single class, GL, plus about 2,080 Span/array/out convenience overloads on
 the GLOverloads static extension class, which is in scope from the same
 "using". Every call dispatches through an unmanaged function pointer that is
@@ -70,7 +70,7 @@ namespaces do NOT (they start with CodeBrix.Platform.OpenGL).
 KEY NAMESPACES / USINGS
 =======================
     using CodeBrix.Platform.OpenGL;                 // GL, GLOverloads, all
-                                                    // 344 enums, the 15 GL
+                                                    // 306 enums, the 15 GL
                                                     // handle structs,
                                                     // DebugProc, PortStatus,
                                                     // ContextSourceExtensions
@@ -114,9 +114,9 @@ vs Maths.Quaternion<T> when both namespaces are imported.
 
 CORE API REFERENCE
 ==================
-Public surface: about 490 public types - 344 enums, 15 GL handle structs,
-the GL class plus the GLOverloads extension class, 58 Maths types, and
-roughly 70 Core types (of which about 30 are Windows-only COM/D3D interop
+Public surface: about 490 public types - 306 GL enums, 15 GL handle structs,
+the GL class plus the GLOverloads extension class, 41 Maths types, and
+roughly 125 Core types (of which about 70 are Windows-only COM/D3D interop
 carried over from upstream Core and irrelevant to OpenGL work). The sections
 below cover every feature area and the types you will actually touch.
 
@@ -480,7 +480,7 @@ directly; the structs are optional.
 
 11. ENUMS
 ---------
-344 enums, all in namespace CodeBrix.Platform.OpenGL, all ": int" with GL
+306 enums, all in namespace CodeBrix.Platform.OpenGL, all ": int" with GL
 hex values, each member tagged [NativeName("Name", "GL_...")]; mask enums
 carry [Flags]. Naming: the GL_ prefix is dropped and the remainder is
 PascalCased (GL_ARRAY_BUFFER -> ArrayBuffer, GL_COLOR_BUFFER_BIT ->
@@ -1141,8 +1141,11 @@ WHAT THIS PACKAGE DOES NOT DO
   (Silk.NET.WGL etc.) - the core profile only.
 - No image decoding, font rendering, scene graph, or shader tooling; it is
   a raw binding.
-- No SIMD-accelerated Maths: the hand-rolled intrinsic paths from upstream
-  are not enabled (Scalar.IsHardwareAccelerated reports the BCL state).
+- No hand-written SIMD paths in Maths: upstream's SSE/AdvSIMD intrinsic
+  paths returned wrong results on .NET 10 and have been removed. Scalar
+  uses the scalar path and the MathF/Math methods (which the JIT may still
+  compile to hardware instructions), and Scalar.IsHardwareAccelerated
+  always returns false.
 - No source generator and no public-API-diff discipline: the bindings are
   fixed at the ported core-profile surface.
 - Not usable on a headless host for real GL calls: there is no software
